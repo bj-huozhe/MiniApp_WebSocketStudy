@@ -1,13 +1,20 @@
 <!--index.wxml-->
 <view class="container">
-  <view class="userinfo">
-    <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
-    <block wx:else>
-      <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-      <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-    </block>
+  <scroll-view scroll-y class='output-content'>
+    <view wx:for='{{outputContent}}' wx:for-index='index' wx:for-item='item' wx:key='index'>
+      <text>{{item}}</text>
+    </view>
+  </scroll-view>
+
+  <view class='message-view'>
+    <text style='font-size: 13px;'>发送消息内容：</text>
+    <input class='message-input' placeholder='message' value='{{message}}' bindinput='inputTap'></input>
   </view>
-  <view class="usermotto">
-    <text class="user-motto">{{motto}}</text>
+
+  <view class='btn-group'>
+    <button type='primary' bindtap='openConnection'>建立连接</button>
+    <button type='primary' bindtap='sendMessage'>发送消息</button>
+    <button type='primary' bindtap='closeConnection'>断开连接</button>
   </view>
+
 </view>
