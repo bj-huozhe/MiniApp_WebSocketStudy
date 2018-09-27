@@ -1,8 +1,8 @@
 <!--index.wxml-->
 <view class="container">
-  <scroll-view scroll-y class='output-content'>
-    <view wx:for='{{outputContent}}' wx:for-index='index' wx:for-item='item' wx:key='index'>
-      <text>{{item}}</text>
+  <scroll-view scroll-y class='output-content' scroll-into-view='msg{{msgNum - 1}}'>
+    <view  id='msg{{index}}' wx:for='{{outputContent}}' wx:for-index='index' wx:for-item='item' wx:key='index'>
+      <text style='font-size: 13px;'>{{item}}</text>
     </view>
   </scroll-view>
 

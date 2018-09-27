@@ -1,4 +1,6 @@
 //index.js
+var util = require('../../utils/util.js');
+
 //获取应用实例
 const app = getApp()
 
@@ -6,6 +8,7 @@ Page({
   data: {
     outputContent: [],
     message: "",
+    msgNum: 0,
     socketTask: null
   },
 
@@ -24,13 +27,6 @@ Page({
     let that = this;
     var socketTask = wx.connectSocket({
       url: 'ws://localhost:8080/ws',
-      success: function() {
-        var tempContent = that.data.outputContent;
-        tempContent.push('建立 WebSocket 成功!');
-        that.setData({
-          outputContent: tempContent,
-        })
-      },
       header: {
         'content-type': 'application/json'
       },
@@ -41,22 +37,37 @@ Page({
       socketTask: socketTask
       })
 
-    // 监听 WebSocket 接受到服务器的消息事件
-    socketTask.onMessage(onMessage => {
-      var resvMsg = onMessage.data;
+    // 监听 WebSocket 连接成功事件
+    socketTask.onOpen(open => {
       var tempContent = that.data.outputContent;
-      tempContent.push('resvMsg:' + resvMsg);
+      var msgNum = that.data.msgNum + 1;
+      tempContent.push(util.formatTime(new Date()) + ' WebSocket 连接成功!');
       that.setData({
         outputContent: tempContent,
+        msgNum: msgNum
       })
     })
 
-    // 监听WebSocket 连接关闭事件
-    socketTask.onClose(close => {
+    // 监听 WebSocket 接受到服务器的消息事件
+    socketTask.onMessage(onMessage => {
+      var resvMsg = onMessage.data;
+      var msgNum = that.data.msgNum + 1;
       var tempContent = that.data.outputContent;
-      tempContent.push('WebSocket 已断开!');
+      tempContent.push(util.formatTime(new Date()) + ' resvMsg:' + resvMsg);
       that.setData({
         outputContent: tempContent,
+        msgNum: msgNum
+      })
+    })
+    
+    // 监听 WebSocket 连接关闭事件
+    socketTask.onClose(close => {
+      var tempContent = that.data.outputContent;
+      var msgNum = that.data.msgNum + 1;
+      tempContent.push(util.formatTime(new Date()) + ' WebSocket 已断开!');
+      that.setData({
+        outputContent: tempContent,
+        msgNum: msgNum
       })
     })
   },
@@ -73,9 +84,11 @@ Page({
       data: sendMsg,
       success:function() {
         var tempContent = that.data.outputContent;
-        tempContent.push('sendMsg:' + sendMsg);
+        var msgNum = that.data.msgNum + 1;
+        tempContent.push(util.formatTime(new Date()) + ' sendMsg:' + sendMsg);
         that.setData({
-          outputContent: tempContent
+          outputContent: tempContent,
+          msgNum: msgNum
         })
       }
     })
